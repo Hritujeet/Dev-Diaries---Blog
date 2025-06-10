@@ -51,3 +51,5 @@ Dev Diaries serves as my digital space to:
 - **Express.js** - Fast, minimalist web framework
 - **PostgreSQL** - Robust relational database
 - **TypeScript** - End-to-end type safety
+
+## Demo Video - https://youtu.be/K8uNYGyINE0?si=kyTD6aHOxMIXBwDO

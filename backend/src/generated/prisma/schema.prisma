@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String? // For OAuth provider name
+  image         String? // For OAuth profile picture
+  emailVerified DateTime? // Required by NextAuth
+
+  Comment Comment[]
+  Like    Like[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name, id])
+  @@index([email])
+}
+
+model BlogPost {
+  id          String    @id @default(uuid())
+  title       String
+  slug        String    @unique
+  description String
+  content     String
+  views       Int       @default(0)
+  Comment     Comment[]
+  Like        Like[]
+  createdAt   DateTime  @default(now())
+
+  @@index([slug])
+}
+
+model Comment {
+  id         String   @id @default(uuid())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  post       BlogPost @relation(fields: [blogPostId], references: [id], onDelete: Cascade)
+  blogPostId String
+  content    String
+  createdAt  DateTime @default(now())
+
+  @@index([userId, blogPostId])
+}
+
+model Like {
+  id         String   @id @default(uuid())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  post       BlogPost @relation(fields: [blogPostId], references: [id], onDelete: Cascade)
+  blogPostId String
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, blogPostId]) // Prevent duplicate likes
+  @@index([userId, blogPostId])
+}
+
+model Project {
+  id          String   @id @default(uuid())
+  title       String   @unique
+  description String
+  year        Int
+  techStack   String[]
+  link        String
+}
